@@ -8,7 +8,7 @@ require('dotenv').config();
 
 exports.signup = async (req, res) => {
 
-  let { email, password: planPassword, name} = req.body;
+  let { email, password: planPassword, firstName, lastName} = req.body;
   const duplicate = await User.findOne({ email }).lean().exec();
   if (duplicate) {
     return res.status(409).json({ status: "error", error: "Duplicate email" });
@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
   const password = await bycrypt.hash(planPassword, 10);
 
   try {
-    const resUser = await User.create({ name, email, password });
+    const resUser = await User.create({ firstName, lastName, email, password });
     res.status(201).json({ status: "success", user:resUser, message: "User created" });
   } catch (error) {
     console.log(error);
@@ -49,8 +49,9 @@ exports.signin = async(req, res) => {
       );
       
       res.cookie('t', token, { expire: new Date() + 9999 });
-      const { _id, name, email, role } = existingUser;
-      return res.status(200).json({token, user: { _id, email, name, role } });
+      const { _id, firstName, lastName, email, role } = existingUser;
+      const name = firstName + ' ' + lastName
+      return res.status(200).json({"accessToken":token, user: [ _id, email,name  ]});
     } else {
       return res.status(400).json({ status: "error", error: "Password is incorrect!" });
     }

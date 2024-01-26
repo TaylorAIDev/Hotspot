@@ -33,9 +33,9 @@ const getDataFromThird = async () => {
 
     for (let i = 0; i < neighbourhoods.length; i++) {
         try {
-            const url = `https://api.yelp.com/v3/businesses/search?location=${neighbourhoods[i]}&categories=${categories}&limit=40`;
+            const url = `https://api.yelp.com/v3/businesses/search?location=${neighbourhoods[i]}&categories=${categories}&limit=10`;
             const response = await axios.get(url, { headers: headers })
-
+            console.log('=======================', response.status)
             if (response.status == 200) {
                 let businesses = response.data.businesses;
                 let { latitude: centerlat, longitude: centerlng } = response.data.region.center;

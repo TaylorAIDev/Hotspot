@@ -10,9 +10,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  firstName: {
     type: String,
   },
+  lastName: {
+    type: String,
+  }
 });
 
 module.exports = mongoose.model('user', UserSchema);

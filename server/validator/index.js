@@ -1,6 +1,6 @@
 const { check, validationResult } = require('express-validator');
 exports.userSignupValidator = (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { email, password, firstName, lastName } = req.body;
 
   // Validate the email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,7 +14,7 @@ exports.userSignupValidator = (req, res, next) => {
   }
 
   // Validate the name
-  if (!name || name.length < 3) {
+  if (!firstName || firstName.length < 3) {
     return res.status(422).json({ error: 'Name must be at least 3 characters long' });
   }
   next();
