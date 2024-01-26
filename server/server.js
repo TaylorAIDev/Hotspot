@@ -3,7 +3,6 @@ const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path');
 const auth = require('./routes/api/auth');
-const popular = require('./routes/api/popular');
 const cors = require('cors');
 const Conversation = require('./models/Conversation')
 
@@ -16,7 +15,6 @@ app.use(express.json());
 
 // Define Routes
 app.use('/api/auth', auth);
-app.use('/api/popular', popular);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -27,28 +25,6 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
   });
 }
-
-app.get('/data/phone/:phone', async (req, res) => {
-  try {
-    console.log(req.params.phone)
-    const data = await Conversation.find({ phone: req.params.phone }); // Retrieve all data from the collection
-    console.log('----', data)
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.get('/data/name/:name', async (req, res) => {
-  try {
-    console.log(req.params.name)
-    const data = await Conversation.find({ phone: req.params.name }); // Retrieve all data from the collection
-    console.log('----', data)
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
 app.get('/data/all', async (req, res) => {
   try {
@@ -131,19 +107,6 @@ app.get('/data/all', async (req, res) => {
       "contacts1": contacts, "conversations1": conversations
     }
     res.json(finalData);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.get('/data/allUsers', async (req, res) => {
-  try {
-    const data = await Conversation.aggregate([
-      { $match: { type: "User" } }, // Match documents where the type is "User"
-      { $group: { _id: "$name", phone: { $first: "$phone" } } } // Group by name and retrieve the first phone number
-    ]); // Retrieve all data from the collection
-    console.log('----', data)
-    res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
