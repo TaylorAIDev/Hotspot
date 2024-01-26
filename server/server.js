@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.get('/data/all', async (req, res) => {
+app.get('/api/allData', async (req, res) => {
   try {
     const data = await Conversation.aggregate([
       { $match: { type: "User" } }, // Match documents where the type is "User"
