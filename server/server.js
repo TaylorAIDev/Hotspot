@@ -5,6 +5,7 @@ const path = require('path');
 const auth = require('./routes/api/auth');
 const cors = require('cors');
 const Conversation = require('./models/Conversation')
+const verifyToken = require('./middleware/verifyToken')
 
 const app = express();
 // Connect Database
@@ -15,7 +16,6 @@ app.use(express.json());
 
 // Define Routes
 app.use('/api/auth', auth);
-
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.get('/api/allData', async (req, res) => {
+app.get('/api/allData', verifyToken, async (req, res) => {
   try {
     const data = await Conversation.aggregate([
       { $match: { type: "User" } }, // Match documents where the type is "User"
@@ -114,7 +114,7 @@ app.get('/api/allData', async (req, res) => {
   }
 });
 
-app.get('/api/chat', async (req, res) => {
+app.get('/api/chat',verifyToken, async (req, res) => {
   const conversationalId = req.query.conversationId;
   const data = await Conversation.aggregate([
     { $match: { type: "User", phone: conversationalId } }, // Match documents where the type is "User" and the phone matches the given phone number
