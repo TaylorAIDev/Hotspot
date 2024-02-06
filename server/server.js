@@ -179,6 +179,10 @@ app.get('/api/chat',verifyToken, async (req, res) => {
   }
 });
 
+app.get('/api/status', async (req,res) => {
+  res.json({"status":"ok"})
+})
+
 
 const PORT = process.env.PORT || 5000;
 
